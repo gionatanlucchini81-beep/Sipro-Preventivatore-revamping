@@ -101,4 +101,3 @@ if submit:
     }
     pdf_out = create_pdf(dati_finali)
     st.download_button("Scarica Preventivo PDF", data=pdf_out, file_name=f"Preventivo_{cliente}.pdf", mime="application/pdf")
-            )
