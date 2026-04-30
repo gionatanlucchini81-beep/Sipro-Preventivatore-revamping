@@ -2,7 +2,7 @@ import streamlit as st
 from fpdf import FPDF
 import math
 
-st.set_page_config(page_title="SiPro Energy - Preventivatore Smart", layout="centered")
+st.set_page_config(page_title="SiPro Energy - Preventivatore Professionale", layout="centered")
 
 def format_euro(valore):
     """Formatta il numero come intero con separatore delle migliaia."""
@@ -68,7 +68,8 @@ def create_pdf(dati):
     pdf.cell(140, 10, "TOTALE CHIAVI IN MANO", 0, 0, 'R')
     pdf.cell(50, 10, f"Euro {format_euro(dati['imponibile'] + iva)}", 0, 1, 'R')
     
-    return pdf.output(dest='S').encode('latin-1')
+    # Rimosso .encode() per compatibilità con fpdf2
+    return pdf.output()
 
 st.title("☀️ SiPro Energy - Preventivatore Professionale")
 
@@ -85,17 +86,16 @@ with st.form("clean_form"):
     submit = st.form_submit_button("CALCOLA E GENERA PDF")
 
 if submit:
-    # --- LOGICA CALCOLI CON ARROTONDAMENTI ---
+    # Calcoli basati sui tuoi coefficienti
     potenza_vecchia_kw = (n_vecchi * w_vecchi) / 1000
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
-    # Valori arrotondati
-    c_smontaggio = round(n_vecchi * 22)
-    c_smaltimento = round(n_vecchi * 10)
-    c_adeguamento = round(potenza_nuova_kw * 30)
-    c_moduli = round(n_nuovi * 150)
-    c_minuteria = round(potenza_nuova_kw * 12)
+    c_smontaggio = round(n_vecchi * 22)[cite: 1, 2]
+    c_smaltimento = round(n_vecchi * 10)[cite: 1, 2]
+    c_adeguamento = round(potenza_nuova_kw * 30)[cite: 1, 2]
+    c_moduli = round(n_nuovi * 150)[cite: 1, 2]
+    c_minuteria = round(potenza_nuova_kw * 12)[cite: 1, 2]
     c_pratiche = 400
     
     subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
