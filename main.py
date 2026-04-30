@@ -2,7 +2,7 @@ import streamlit as st
 from fpdf import FPDF
 import math
 
-st.set_page_config(page_title="SiPro Energy - Preventivatore Professionale", layout="centered")
+st.set_page_config(page_title="SiPro Energy - Preventivatore", layout="centered")
 
 def format_euro(valore):
     """Formatta il numero come intero con separatore delle migliaia."""
@@ -20,12 +20,14 @@ def create_pdf(dati):
     pdf.cell(0, 10, 'PREVENTIVO TECNICO ECONOMICO', 0, 1, 'C')
     pdf.ln(10)
 
+    # Dati Cliente
     pdf.set_font("Arial", 'B', 11)
     pdf.cell(0, 7, f"SPETT.LE CLIENTE: {dati['cliente'].upper()}", 0, 1)
     pdf.set_font("Arial", '', 11)
     pdf.cell(0, 7, f"Sito: {dati['sito']}", 0, 1)
     pdf.ln(5)
 
+    # Dettaglio Tecnico
     pdf.set_fill_color(230, 230, 230)
     pdf.set_font("Arial", 'B', 11)
     pdf.cell(0, 8, "DETTAGLIO INTERVENTO DI REVAMPING", 0, 1, 'L', True)
@@ -35,6 +37,7 @@ def create_pdf(dati):
     pdf.cell(0, 7, f"Nuova potenza installata: {dati['potenza_nuova_kw']:.2f} kWp", 0, 1)
     pdf.ln(8)
 
+    # Tabella Costi
     pdf.set_font("Arial", 'B', 10)
     pdf.cell(140, 10, "DESCRIZIONE PRESTAZIONE", 1, 0, 'C', True)
     pdf.cell(50, 10, "IMPORTO", 1, 1, 'C', True)
@@ -44,6 +47,7 @@ def create_pdf(dati):
         pdf.cell(140, 10, voce, 1)
         pdf.cell(50, 10, f"Euro {format_euro(importo)}", 1, 1, 'R')
 
+    # Totali
     pdf.ln(5)
     pdf.set_font("Arial", '', 10)
     pdf.cell(140, 8, "Totale lavori", 0, 0, 'R')
@@ -64,7 +68,13 @@ def create_pdf(dati):
     pdf.cell(140, 10, "TOTALE CHIAVI IN MANO", 0, 0, 'R')
     pdf.cell(50, 10, f"Euro {format_euro(dati['imponibile'] + iva)}", 0, 1, 'R')
     
-    return pdf.output(dest='S')
+    # FRASE AGGIUNTIVA SOTTO IL TOTALE
+    pdf.ln(10)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("Arial", 'I', 10)
+    pdf.multi_cell(0, 6, 'Per i costi inerenti alla messa in sicurezza della copertura sarà valutata a parte successivamente al sopralluogo effettuato', 0, 'L')
+    
+    return pdf.output()
 
 st.title("☀️ SiPro Energy - Preventivatore")
 
@@ -79,16 +89,16 @@ with st.form("main_form"):
     submit = st.form_submit_button("CALCOLA E GENERA PDF")
 
 if submit:
-    # Calcoli economici
+    # Calcoli economici basati sui coefficienti SiPro Energy[cite: 1, 2]
     potenza_vecchia_kw = (n_vecchi * w_vecchi) / 1000
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
-    c_smontaggio = round(n_vecchi * 22)
-    c_smaltimento = round(n_vecchi * 10)
-    c_adeguamento = round(potenza_nuova_kw * 30)
-    c_moduli = round(n_nuovi * 150)
-    c_minuteria = round(potenza_nuova_kw * 12)
+    c_smontaggio = round(n_vecchi * 22)[cite: 1, 2]
+    c_smaltimento = round(n_vecchi * 10)[cite: 1, 2]
+    c_adeguamento = round(potenza_nuova_kw * 30)[cite: 1, 2]
+    c_moduli = round(n_nuovi * 150)[cite: 1, 2]
+    c_minuteria = round(potenza_nuova_kw * 12)[cite: 1, 2]
     c_pratiche = 400
     
     subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
