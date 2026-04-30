@@ -105,15 +105,15 @@ if submit:
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
     # Calcoli economici corretti
-    c_smontaggio = round(n_vecchi * 24)
+    c_smontaggio = round(n_vecchi * 26)
     c_smaltimento = round(n_vecchi * 10)
-    c_adeguamento = round(potenza_nuova_kw * 36)
+    c_adeguamento = round(potenza_nuova_kw * 39)
     c_moduli = round(n_nuovi * 150)
-    c_minuteria = round(potenza_nuova_kw * 22)
+    c_minuteria = round(potenza_nuova_kw * 35)
     c_pratiche = 500
     
     subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
-    totale_progetto = round(subtotale * 0.09)
+    totale_progetto = round(subtotale * 0.19)
     imponibile = subtotale + totale_progetto
     
     voci = [
