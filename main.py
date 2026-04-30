@@ -5,6 +5,7 @@ import math
 st.set_page_config(page_title="SiPro Energy - Preventivatore Professionale", layout="centered")
 
 def format_euro(valore):
+    """Formatta il numero come intero con separatore delle migliaia."""
     return f"{int(round(valore)):,}".replace(",", ".")
 
 def create_pdf(dati):
@@ -63,11 +64,11 @@ def create_pdf(dati):
     pdf.cell(140, 10, "TOTALE CHIAVI IN MANO", 0, 0, 'R')
     pdf.cell(50, 10, f"Euro {format_euro(dati['imponibile'] + iva)}", 0, 1, 'R')
     
-    return pdf.output()
+    return pdf.output(dest='S')
 
-st.title("☀️ SiPro Energy - Preventivatore Professionale")
+st.title("☀️ SiPro Energy - Preventivatore")
 
-with st.form("clean_form"):
+with st.form("main_form"):
     cliente = st.text_input("Spett.le Cliente")
     sito = st.text_input("Località Impianto")
     col1, col2 = st.columns(2)
@@ -78,6 +79,7 @@ with st.form("clean_form"):
     submit = st.form_submit_button("CALCOLA E GENERA PDF")
 
 if submit:
+    # Calcoli economici
     potenza_vecchia_kw = (n_vecchi * w_vecchi) / 1000
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
@@ -94,7 +96,7 @@ if submit:
     imponibile = subtotale + totale_progetto
     
     voci = [
-        (f"Smontaggio e movimentazione n. {n_vecchi} moduli", c_smontaggio),
+        (f"Smontaggio e movimentazione a terra n. {n_vecchi} moduli", c_smontaggio),
         (f"Smaltimento moduli presso azienda certificata GSE", c_smaltimento),
         (f"Fornitura e posa n. {n_nuovi} nuovi moduli Solarwatt 460W", c_moduli),
         (f"Adeguamento strutture di sostegno esistenti", c_adeguamento),
@@ -109,6 +111,12 @@ if submit:
         "subtotale": subtotale, "totale_progetto": totale_progetto, "imponibile": imponibile
     }
     
-    st.success(f"✅ Calcolo completato per {cliente}")
-    pdf_bytes = create_pdf(dati_pdf)
-    st.download_button("SCARICA PREVENTIVO PDF", data=pdf_bytes, file_name=f"Preventivo_{cliente}.pdf")
+    pdf_output = create_pdf(dati_pdf)
+    
+    st.success(f"✅ Preventivo creato per {cliente}")
+    st.download_button(
+        label="SCARICA PREVENTIVO PDF",
+        data=bytes(pdf_output),
+        file_name=f"Preventivo_{cliente}.pdf",
+        mime="application/pdf"
+    )
