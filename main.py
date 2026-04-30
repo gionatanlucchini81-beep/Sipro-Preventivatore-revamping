@@ -5,7 +5,6 @@ import math
 st.set_page_config(page_title="SiPro Energy - Preventivatore Professionale", layout="centered")
 
 def format_euro(valore):
-    """Formatta il numero come intero con separatore delle migliaia."""
     return f"{int(round(valore)):,}".replace(",", ".")
 
 def create_pdf(dati):
@@ -20,14 +19,12 @@ def create_pdf(dati):
     pdf.cell(0, 10, 'PREVENTIVO TECNICO ECONOMICO', 0, 1, 'C')
     pdf.ln(10)
 
-    # Dati Cliente
     pdf.set_font("Arial", 'B', 11)
     pdf.cell(0, 7, f"SPETT.LE CLIENTE: {dati['cliente'].upper()}", 0, 1)
     pdf.set_font("Arial", '', 11)
     pdf.cell(0, 7, f"Sito: {dati['sito']}", 0, 1)
     pdf.ln(5)
 
-    # Dettaglio Tecnico
     pdf.set_fill_color(230, 230, 230)
     pdf.set_font("Arial", 'B', 11)
     pdf.cell(0, 8, "DETTAGLIO INTERVENTO DI REVAMPING", 0, 1, 'L', True)
@@ -37,7 +34,6 @@ def create_pdf(dati):
     pdf.cell(0, 7, f"Nuova potenza installata: {dati['potenza_nuova_kw']:.2f} kWp", 0, 1)
     pdf.ln(8)
 
-    # Tabella Costi - Senza Decimali
     pdf.set_font("Arial", 'B', 10)
     pdf.cell(140, 10, "DESCRIZIONE PRESTAZIONE", 1, 0, 'C', True)
     pdf.cell(50, 10, "IMPORTO", 1, 1, 'C', True)
@@ -47,7 +43,6 @@ def create_pdf(dati):
         pdf.cell(140, 10, voce, 1)
         pdf.cell(50, 10, f"Euro {format_euro(importo)}", 1, 1, 'R')
 
-    # Totali - Senza Decimali
     pdf.ln(5)
     pdf.set_font("Arial", '', 10)
     pdf.cell(140, 8, "Totale lavori", 0, 0, 'R')
@@ -75,26 +70,23 @@ st.title("☀️ SiPro Energy - Preventivatore Professionale")
 with st.form("clean_form"):
     cliente = st.text_input("Spett.le Cliente")
     sito = st.text_input("Località Impianto")
-    
     col1, col2 = st.columns(2)
     with col1:
         n_vecchi = st.number_input("N. vecchi moduli", min_value=1, value=150)
     with col2:
         w_vecchi = st.number_input("Watt vecchio modulo", min_value=1, value=245)
-    
     submit = st.form_submit_button("CALCOLA E GENERA PDF")
 
 if submit:
-    # Calcoli basati sui coefficienti SiPro Energy[cite: 1, 2]
     potenza_vecchia_kw = (n_vecchi * w_vecchi) / 1000
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
-    c_smontaggio = round(n_vecchi * 22)[cite: 1, 2]
-    c_smaltimento = round(n_vecchi * 10)[cite: 1, 2]
-    c_adeguamento = round(potenza_nuova_kw * 30)[cite: 1, 2]
-    c_moduli = round(n_nuovi * 150)[cite: 1, 2]
-    c_minuteria = round(potenza_nuova_kw * 12)[cite: 1, 2]
+    c_smontaggio = round(n_vecchi * 22)
+    c_smaltimento = round(n_vecchi * 10)
+    c_adeguamento = round(potenza_nuova_kw * 30)
+    c_moduli = round(n_nuovi * 150)
+    c_minuteria = round(potenza_nuova_kw * 12)
     c_pratiche = 400
     
     subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
@@ -102,7 +94,7 @@ if submit:
     imponibile = subtotale + totale_progetto
     
     voci = [
-        (f"Smontaggio e movimentazione a terra n. {n_vecchi} moduli", c_smontaggio),
+        (f"Smontaggio e movimentazione n. {n_vecchi} moduli", c_smontaggio),
         (f"Smaltimento moduli presso azienda certificata GSE", c_smaltimento),
         (f"Fornitura e posa n. {n_nuovi} nuovi moduli Solarwatt 460W", c_moduli),
         (f"Adeguamento strutture di sostegno esistenti", c_adeguamento),
