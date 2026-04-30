@@ -68,7 +68,6 @@ def create_pdf(dati):
     pdf.cell(140, 10, "TOTALE CHIAVI IN MANO", 0, 0, 'R')
     pdf.cell(50, 10, f"Euro {format_euro(dati['imponibile'] + iva)}", 0, 1, 'R')
     
-    # Rimosso .encode() per compatibilità con fpdf2
     return pdf.output()
 
 st.title("☀️ SiPro Energy - Preventivatore Professionale")
@@ -79,14 +78,14 @@ with st.form("clean_form"):
     
     col1, col2 = st.columns(2)
     with col1:
-        n_vecchi = st.number_input("N. vecchi moduli", min_value=1, value=80)
+        n_vecchi = st.number_input("N. vecchi moduli", min_value=1, value=150)
     with col2:
         w_vecchi = st.number_input("Watt vecchio modulo", min_value=1, value=245)
     
     submit = st.form_submit_button("CALCOLA E GENERA PDF")
 
 if submit:
-    # Calcoli basati sui tuoi coefficienti
+    # Calcoli basati sui coefficienti SiPro Energy[cite: 1, 2]
     potenza_vecchia_kw = (n_vecchi * w_vecchi) / 1000
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
