@@ -104,17 +104,16 @@ if submit:
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
-    # Calcoli economici corretti
     c_smontaggio = round(n_vecchi * 26)
     c_smaltimento = round(n_vecchi * 10)
-    c_adeguamento = round(potenza_nuova_kw * 39)
+    c_adeguamento = round(potenza_nuova_kw * 37)
     c_moduli = round(n_nuovi * 150)
-    c_minuteria = round(potenza_nuova_kw * 35)
+    c_minuteria = round(potenza_nuova_kw * 22)
     c_pratiche = 500
     
-    subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
-    totale_progetto = round(subtotale * 0.19)
-    imponibile = subtotale + totale_progetto
+    subtotale_lavori = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
+    c_progetto = round(subtotale_lavori * 0.09)
+    imponibile = subtotale_lavori + c_progetto
     
     voci = [
         (f"Smontaggio e movimentazione a terra n. {n_vecchi} moduli", c_smontaggio),
@@ -122,16 +121,17 @@ if submit:
         (f"Fornitura e posa n. {n_nuovi} nuovi moduli Solarwatt 460W", c_moduli),
         (f"Adeguamento strutture di sostegno esistenti", c_adeguamento),
         (f"Minuteria, connettori e materiale elettrico", c_minuteria),
-        (f"Oneri per pratiche amministrative e connessione", c_pratiche)
+        (f"Oneri per pratiche amministrative e connessione", c_pratiche),
+        (f"Progettazione e gestione tecnica ", c_progetto)
     ]
     
     dati_pdf = {
         "cliente": cliente, "sito": sito, "n_vecchi": n_vecchi, "w_vecchi": w_vecchi,
         "potenza_vecchia_kw": potenza_vecchia_kw, "n_nuovi": n_nuovi, 
         "potenza_nuova_kw": potenza_nuova_kw, "voci": voci, 
-        "imponibile": imponibile, "subtotale": subtotale, "totale_progetto": totale_progetto
+        "imponibile": imponibile
     }
     
     pdf_out = create_pdf(dati_pdf)
-    st.success(f"✅ Preventivo per {cliente} generato!")
+    st.success(f"✅ Preventivo per {cliente} generato correttamente!")
     st.download_button(label="📥 SCARICA PDF", data=bytes(pdf_out), file_name=f"Preventivo_{cliente}.pdf", mime="application/pdf")
