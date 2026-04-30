@@ -90,12 +90,12 @@ if submit:
     n_nuovi = math.ceil(potenza_vecchia_kw / 0.460)
     potenza_nuova_kw = (n_nuovi * 460) / 1000
     
-    # Valori arrotondati come da tua richiesta[cite: 1, 2]
-    c_smontaggio = round(n_vecchi * 22)[cite: 1, 2]
-    c_smaltimento = round(n_vecchi * 10)[cite: 1, 2]
-    c_adeguamento = round(potenza_nuova_kw * 30)[cite: 1, 2]
-    c_moduli = round(n_nuovi * 150)[cite: 1, 2]
-    c_minuteria = round(potenza_nuova_kw * 12)[cite: 1, 2]
+    # Valori arrotondati
+    c_smontaggio = round(n_vecchi * 22)
+    c_smaltimento = round(n_vecchi * 10)
+    c_adeguamento = round(potenza_nuova_kw * 30)
+    c_moduli = round(n_nuovi * 150)
+    c_minuteria = round(potenza_nuova_kw * 12)
     c_pratiche = 400
     
     subtotale = c_smontaggio + c_smaltimento + c_adeguamento + c_moduli + c_minuteria + c_pratiche
